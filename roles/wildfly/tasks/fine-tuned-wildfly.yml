@@ -1,0 +1,46 @@
+---
+- set_fact:
+     wildfly_instance_management_port: "{{ 9990 + ((item - wildfly.port_range_offset) * 100) }}"
+     wildfly_instance_http_port: "{{ 8080 + ((item - wildfly.port_range_offset) * 100) }}"
+     wildfly_instance_https_port: "{{ 8443 + ((item - wildfly.port_range_offset) * 100) }}"
+     wildfly_instance_ajp_port: "{{ 8009 + ((item - wildfly.port_range_offset) * 100) }}"
+
+- name: configure firewall for Wildfly ports
+  become: yes
+  firewalld:
+    port: "{{ port }}"
+    permanent: true
+    state: enabled
+    immediate: yes
+  loop:
+    - "{{ wildfly_instance_http_port }}/tcp"
+    - "{{ wildfly_instance_https_port }}/tcp"
+    - "{{ wildfly_instance_ajp_port }}/tcp"
+  loop_control:
+    loop_var: port
+
+- set_fact:
+    demo_app: "{{ apps | selectattr('version','equalto', sample_app_version) | list | first }}"
+
+- set_fact:
+    demo_app_dest: "{{ app_dir + '/' + demo_app.name + '-' + demo_app.version + '.' + demo_app.extension }}"
+
+- name: "Ensures apps repository folder {{ app_dir }} exits."
+  file:
+    path: "{{ app_dir }}"
+    state: directory
+
+- include_tasks: tasks/app_download.yml
+  vars:
+    app_detail: "{{ app.detail }}"
+    app_dest: "{{ app.dest }}"
+  loop:
+    - { detail: "{{ demo_app }}", dest: "{{ demo_app_dest }}" }
+  loop_control:
+    loop_var: app
+
+- name: "Configure Wildfly with Keycloak support"
+  block:
+    - include_tasks: jcliff-with-keycloak.yml
+  when:
+    - not disable_keycloak is defined

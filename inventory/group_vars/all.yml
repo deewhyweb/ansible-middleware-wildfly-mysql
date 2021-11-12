@@ -1,0 +1,5 @@
+---
+  database:
+    name: "wildfly"
+    user: "wildfly"
+    password: "wildfly"

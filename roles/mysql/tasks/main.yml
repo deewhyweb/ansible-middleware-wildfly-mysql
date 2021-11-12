@@ -1,0 +1,66 @@
+- name: "Install mysql and relate packages"
+  include_role:
+    name: fastpackages
+  vars:
+    packages_list: "{{ mysqldb.packages_list }}"
+
+- stat:
+    path: "{{ mysqldb.mysqldata }}/pg_hba.conf"
+  register: mysql
+
+- name: Make sure pymysql is present
+  become: true # needed if the other tasks are not played as root
+  pip:
+    name: pymysql
+    state: present
+
+# - name: "Init PostgesQL Db"
+#   command:
+#     cmd: /usr/bin/postgresql-setup initdb
+#     creates: /var/lib/pgsql/initdb.log
+#   register: datadir_init
+#   when:
+#     - pgdata_init is defined
+#     - pgdata_init.stat is defined
+#     - not pgdata_init.stat.exists
+
+# - name: "Ensure PostgreSQL accept connection from app servers"
+#   template:
+#     src: pg_hba.conf
+#     dest: /var/lib/pgsql/data/pg_hba.conf
+#     owner: postgres
+#     group: postgres
+#     mode: 0600
+#   notify:
+#     - restart postgres
+
+# - name: "Ensure PostgreSQL accept remote connection"
+#   template:
+#     src: postgresql.conf
+#     dest: /var/lib/pgsql/data/postgresql.conf
+#     owner: postgres
+#     group: postgres
+#     mode: 0600
+#   notify:
+#     - restart postgres
+#   when:
+#     - groups['pgsql'][0] != 'localhost'
+
+- name: "Ensure the mysql service is running"
+  service:
+    name: mysqld
+    state: started
+    enabled: yes
+
+- name: "Create database"
+  community.mysql.mysql_db:
+    name: "{{ mysqldb.db.name }}"
+    state: present
+
+- name: "Create user for database"
+  community.mysql.mysql_user:
+    host: "%"
+    name: "{{ mysqldb.db.user }}"
+    password: "{{ mysqldb.db.user }}"
+    priv: '*.*:ALL'
+    state: present

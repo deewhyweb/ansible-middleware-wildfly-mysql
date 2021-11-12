@@ -1,0 +1,16 @@
+
+---
+- name: Playbook for Wildfly Hosts
+  hosts: wildfly
+  collections:
+    - middleware_automation.jcliff
+  tasks:
+    - name: JCliff
+      include_role:
+        name: jcliff
+
+    - name: Wildfly Role
+      include_role:
+        name: wildfly
+      vars:
+        keycloak_3trains_url: "{{ 'http://' + (groups['keycloak'][0] if groups['keycloak']| length > 0 else 'localhost')  + ':8080' }}"

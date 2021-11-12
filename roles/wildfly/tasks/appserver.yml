@@ -1,0 +1,27 @@
+---
+- set_fact:
+    instance_id: "{{ item }}"
+
+- name: "Set up for Wildfly instance wfly-{{ item }}"
+  include_role:
+    name: wildfly_systemd
+  vars:
+    wildfly_home: "{{ wildfly.home }}"
+    wildfly_user: "{{ wildfly.user }}"
+    wilfly_group: "{{ wildfly.group }}"
+    wildfly_config_base: "{{ wildfly.config.base }}"
+    wildfly_basedir_prefix: "{{ wildfly.basedir_prefix }}"
+    wildfly_config_name: "{{ wildfly.config.name }}"
+    wildfly_port_range_offset: 0
+    instance_id: "{{ item }}"
+
+
+# - name: "Install Keycloak Extension on instance wfly-{{ item }}"
+#   include_tasks: keycloak-extension-install.yml
+#   when:
+#     - not disable_keycloak is defined
+- name: "Install mysql driver"
+  include_tasks: mysql_jdbc_driver.yml
+
+- name: "Deploy app on instance wfly-{{ item }}"
+  include_tasks: fine-tuned-wildfly.yml

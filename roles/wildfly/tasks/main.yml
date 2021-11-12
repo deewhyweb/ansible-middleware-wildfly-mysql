@@ -1,0 +1,41 @@
+---
+- assert:
+    that:
+      - wildfly is defined
+      - wildfly.user is defined
+      - wildfly.home is defined
+      - jdbc_driver_module_dir is defined
+    quiet: true
+
+- debug:
+    msg: "keycloak_3trains_url: {{ keycloak_3trains_url }}"
+  when:
+    - keycloak_3trains_url is defined
+
+- name: "Install Prerequisites"
+  include_tasks: prereqs.yml
+
+- name: "Install Widfly"
+  include_tasks: install-wildfly.yml
+
+- name: "Install Postresql driver"
+  include_role:
+    name: wildfly_driver
+    tasks_from: jdbc_driver.yml
+  vars:
+      wildfly_user: "{{ wildfly.user }}"
+      jdbc_driver_module_dir: "{{ wildfly.home }}//modules/org/postgresql/main"
+      jdbc_driver_version: "{{ override_pgsql_jdbc_driver_version | default('9.2-1002-jdbc4') }}"
+      jdbc_driver_jar_filename: "postgresql-{{ jdbc_driver_version }}.jar"
+      jdbc_driver_jar_url: "https://repo.maven.apache.org/maven2/org/postgresql/postgresql/{{ jdbc_driver_version }}/{{ jdbc_driver_jar_filename }}"
+      jdbc_driver_jar_installation_path: "{{ jdbc_driver_module_dir }}/{{ jdbc_driver_jar_filename }}"
+      jdbc_driver_module_name: 'org.postgresql'
+
+- set_fact:
+    nb_instances: "{{ (nb_instance_by_node | default(1) ) }}"
+
+- set_fact:
+    nb_instances: "{{ (nb_instances | int) +1 }}"
+
+- include_tasks: appserver.yml
+  loop: "{{ range(1, nb_instances|int) | list }}"

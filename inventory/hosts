@@ -1,0 +1,10 @@
+# Placeholder Group
+[demo]
+
+# Wildfly Group
+[wildfly]
+192.168.122.117
+
+
+[demo:children]
+wildfly

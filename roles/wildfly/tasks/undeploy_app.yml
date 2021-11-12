@@ -1,0 +1,19 @@
+---
+- assert:
+    that:
+      - wildfly is defined
+      - wildfly.home is defined
+      - item is defined
+      - app_name is defined
+    quiet: true
+
+- block:
+    - name: "Undeploy {{ app_name }}"
+      include_tasks: jboss_cli.yml
+      vars:
+        jboss_cli_query: "undeploy {{ app_name }}"
+        wildfly_home: "{{ wildfly.home }}"
+        cli_port: "{{ 9990 + (item * 100) }}"
+  rescue:
+    - debug:
+        msg: "No app such app {{ app_name }} on localhost:{{ cli_port }}"
