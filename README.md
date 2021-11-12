@@ -1,7 +1,7 @@
-wildfly with mysql drivers
+Wildfly with mysql drivers
 ====
 
-This repository contains a set of Ansible based roles and playbooks to demonstrate the integration between a [Wildfly](https://wildfly.org/) cluster with a mysql database
+This repository contains a set of Ansible based roles and playbooks to demonstrate the deployment of a [Wildfly](https://wildfly.org/) cluster, mysql database, mysql drivers, and kitchensink application configured to connect to mysql.
 
 ## Set up
 
