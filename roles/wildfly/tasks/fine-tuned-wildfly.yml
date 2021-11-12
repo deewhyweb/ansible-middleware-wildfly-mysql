@@ -39,8 +39,6 @@
   loop_control:
     loop_var: app
 
-- name: "Configure Wildfly with Keycloak support"
+- name: "Configure Wildfly with mysql extensions"
   block:
-    - include_tasks: jcliff-with-keycloak.yml
-  when:
-    - not disable_keycloak is defined
+    - include_tasks: jcliff.yml
