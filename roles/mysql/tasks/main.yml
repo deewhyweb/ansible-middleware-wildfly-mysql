@@ -9,42 +9,10 @@
   register: mysql
 
 - name: Make sure pymysql is present
-  become: true # needed if the other tasks are not played as root
+  become: true 
   pip:
     name: pymysql
     state: present
-
-# - name: "Init PostgesQL Db"
-#   command:
-#     cmd: /usr/bin/postgresql-setup initdb
-#     creates: /var/lib/pgsql/initdb.log
-#   register: datadir_init
-#   when:
-#     - pgdata_init is defined
-#     - pgdata_init.stat is defined
-#     - not pgdata_init.stat.exists
-
-# - name: "Ensure PostgreSQL accept connection from app servers"
-#   template:
-#     src: pg_hba.conf
-#     dest: /var/lib/pgsql/data/pg_hba.conf
-#     owner: postgres
-#     group: postgres
-#     mode: 0600
-#   notify:
-#     - restart postgres
-
-# - name: "Ensure PostgreSQL accept remote connection"
-#   template:
-#     src: postgresql.conf
-#     dest: /var/lib/pgsql/data/postgresql.conf
-#     owner: postgres
-#     group: postgres
-#     mode: 0600
-#   notify:
-#     - restart postgres
-#   when:
-#     - groups['pgsql'][0] != 'localhost'
 
 - name: "Ensure the mysql service is running"
   service:
