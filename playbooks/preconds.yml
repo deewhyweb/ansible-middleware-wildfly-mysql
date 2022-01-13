@@ -8,7 +8,7 @@
           - ansible_distribution is defined
           - ansible_distribution == "RedHat"
           - ansible_distribution_version is defined
-          - ansible_distribution_version == "8.4"
+          - ansible_distribution_version >= "8.4"
           - ansible_version is defined
           - ansible_version.string is version('2.9','>')
           - ansible_python_version is defined

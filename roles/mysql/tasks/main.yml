@@ -4,15 +4,23 @@
   vars:
     packages_list: "{{ mysqldb.packages_list }}"
 
-- stat:
-    path: "{{ mysqldb.mysqldata }}/pg_hba.conf"
-  register: mysql
+
+- name: Override variables for MySQL (RedHat).
+  set_fact:
+    mysql_daemon: mysqld
+    mysql_packages: ['mysql-community-server']
+    mysql_log_error: ""
+    mysql_syslog_tag: mysqld
+    mysql_pid_file: /var/run/mysqld/mysqld.pid
+    mysql_socket: /var/lib/mysql/mysql.sock
+
 
 - name: Make sure pymysql is present
   become: true 
   pip:
     name: pymysql
     state: present
+
 
 - name: "Ensure the mysql service is running"
   service:
@@ -32,3 +40,9 @@
     password: "{{ mysqldb.db.user }}"
     priv: '*.*:ALL'
     state: present
+
+- name: Start firewalld
+  service: name=firewalld state=started enabled=yes
+
+- name: insert firewalld rule
+  firewalld: port=3306/tcp permanent=true state=enabled immediate=yes
