@@ -3,6 +3,11 @@ Wildfly with mysql drivers
 
 This repository contains a set of Ansible based roles and playbooks to demonstrate the deployment of a [Wildfly](https://wildfly.org/) cluster, mysql database, mysql drivers, and kitchensink application configured to connect to mysql.
 
+These playbooks will install a single mysql instance on a dedicated server, and will deploy multiple Wildfly instances on individual servers.  These wildfly instances will be configured to connect to the mysql instance.  
+## Prerequisites
+2 or more RHEL 8.4+ vms with 4096mb per vm.
+
+
 ## Set up
 
 The following sections describe the steps necessary to prepare your machine for execution
@@ -40,6 +45,12 @@ mysql
 That's all! You can now run the playbook to set up the demo:
 
     $ ansible-playbook -i inventory/hosts playbooks/demo.yml 
+
+## Testing
+
+To test the install, on each wildfly instance, open firefox and navigate to: https://localhost:8543/kitchensink-0.0.1/index.jsf
+
+Create a contact and test to ensure this record exists on the other server.
 
 ## Cleanup
 
