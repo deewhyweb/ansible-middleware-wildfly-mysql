@@ -23,17 +23,20 @@
 
 
 - name: "Ensure the mysql service is running"
+  become: true
   service:
     name: mysqld
     state: started
     enabled: yes
 
 - name: "Create database"
+  become: true
   community.mysql.mysql_db:
     name: "{{ mysqldb.db.name }}"
     state: present
 
 - name: "Create user for database"
+  become: true
   community.mysql.mysql_user:
     host: "%"
     name: "{{ mysqldb.db.user }}"
@@ -42,7 +45,9 @@
     state: present
 
 - name: Start firewalld
+  become: true
   service: name=firewalld state=started enabled=yes
 
 - name: insert firewalld rule
+  become: true
   firewalld: port=3306/tcp permanent=true state=enabled immediate=yes

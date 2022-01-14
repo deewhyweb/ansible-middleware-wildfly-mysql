@@ -1,7 +1,6 @@
 ---
 - name: Playbook for mysql Setup
   hosts: mysql
-  become: yes
   tasks:
     - name: Mysql Role
       include_role:

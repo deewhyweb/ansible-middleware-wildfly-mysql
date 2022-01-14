@@ -7,11 +7,6 @@
       - jdbc_driver_module_dir is defined
     quiet: true
 
-- debug:
-    msg: "keycloak_3trains_url: {{ keycloak_3trains_url }}"
-  when:
-    - keycloak_3trains_url is defined
-
 - name: "Install Prerequisites"
   include_tasks: prereqs.yml
 

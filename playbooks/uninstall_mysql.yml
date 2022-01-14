@@ -1,0 +1,9 @@
+---
+- name: Uninstal MySQL
+  hosts: mysql
+  tasks:
+    - name: mysql Role
+      include_role:
+        name: mysql
+        tasks_from: uninstall_mysql.yml
+

@@ -1,0 +1,7 @@
+---
+# Uninstall mysql
+- import_playbook: uninstall_mysql.yml
+
+# Uninstall wildfly instances
+- import_playbook: uninstall_all_wfly_instances.yml
+

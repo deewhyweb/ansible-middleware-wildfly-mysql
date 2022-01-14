@@ -1,9 +1,6 @@
 ---
 - import_playbook: preconds.yml
 
-# JBoss Core Services (Apache HTTPD)
-- import_playbook: jbcs.yml
-
 # Mysql playbook
 - import_playbook: mysql.yml
 

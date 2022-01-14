@@ -3,12 +3,12 @@
 
 # Wildfly Group
 [wildfly]
-192.168.122.117
-192.168.122.35
+192.168.122.11
+192.168.122.125
 
 # Mysql database Group
 [mysql]
-192.168.122.154
+192.168.122.84
 
 [demo:children]
 wildfly
